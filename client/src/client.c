@@ -16,16 +16,25 @@ int main(void)
 
 	logger = iniciar_logger();
 
+	logger = log_create("./tp0.log", "Logs", 1, LOG_LEVEL_INFO);
+
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
+	log_info(logger, "Hola! Soy un log");
+	log_destroy(logger);
 
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
 	config = iniciar_config();
 
+	config = config_create(cliente.config);
+
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
+	ip = config_get_string_value(config, "IP");
+	puerto = (config_get_string_value(config, "PUERTO"));
+	valor = config_get_string_value(config, "CLAVE");
 
 	// Loggeamos el valor de config
 
