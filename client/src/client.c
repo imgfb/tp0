@@ -16,19 +16,20 @@ int main(void)
 
 	logger = iniciar_logger();
 
-	logger = log_create("./tp0.log", "Logs", 1, LOG_LEVEL_INFO);
-
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
 	log_info(logger, "Hola! Soy un log");
-	log_destroy(logger);
 
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
 	config = iniciar_config();
 
-	config = config_create(cliente.config);
+	if (config == NULL) {
+    // ¡No se pudo crear el config!
+    // Terminemos el programa
+	exit(EXIT_FAILURE);
+	}
 
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
@@ -37,11 +38,14 @@ int main(void)
 	valor = config_get_string_value(config, "CLAVE");
 
 	// Loggeamos el valor de config
-
+	log_info(logger, "Clave: %s", valor);
+	log_info(logger, "ip: %s", ip);
+	log_info(logger, "puerto: %s", puerto);
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
+	log_destroy(logger);
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
@@ -64,6 +68,8 @@ int main(void)
 t_log* iniciar_logger(void)
 {
 	t_log* nuevo_logger;
+	
+	nuevo_logger = log_create("./tp0.log", "Logs", 1, LOG_LEVEL_INFO);
 
 	return nuevo_logger;
 }
@@ -71,6 +77,8 @@ t_log* iniciar_logger(void)
 t_config* iniciar_config(void)
 {
 	t_config* nuevo_config;
+
+	nuevo_config = config_create("./cliente.config");
 
 	return nuevo_config;
 }
@@ -83,8 +91,17 @@ void leer_consola(t_log* logger)
 	leido = readline("> ");
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
+	while(1)
+	{
+		if(string_is_empty(leido))
+			break;
 
+		log_info(logger, "%s", leido);
+		free(leido);
+		leido = readline("> ");
+	}
 
+	free(leido);
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
 }
