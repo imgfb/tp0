@@ -45,7 +45,7 @@ int main(void)
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
-	log_destroy(logger);
+	
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
@@ -55,6 +55,7 @@ int main(void)
 	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	enviar_mensaje(valor, conexion);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
@@ -123,4 +124,5 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
 	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
 	  con las funciones de las commons y del TP mencionadas en el enunciado */
+	log_destroy(logger);
 }
