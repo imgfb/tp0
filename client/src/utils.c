@@ -20,19 +20,32 @@ int crear_conexion(char *ip, char* puerto)
 {
 	struct addrinfo hints;
 	struct addrinfo *server_info;
-
+	t_log* logger = log_create("./conexion.log", "Logs", 1, LOG_LEVEL_INFO);
+	
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-
-	getaddrinfo(ip, puerto, &hints, &server_info);
-
+	int err;
+	err = getaddrinfo(ip, puerto, &hints, &server_info);
+	if (err!=0)
+	{
+		log_info(logger, "Fail to get addr");
+		exit(EXIT_FAILURE);
+	}	
 	// Ahora vamos a crear el socket.
-	int socket_cliente = 0;
+	int socket_cliente = socket(server_info->ai_family, 
+									server_info->ai_socktype,
+									server_info->ai_protocol);
 
 	// Ahora que tenemos el socket, vamos a conectarlo
-	connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen);
+	err = connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen);
+	if(err==-1)
+	{
+		log_info(logger, "Error al conectar.");
+		exit(EXIT_FAILURE);
+	}
+	else
+		log_info(logger, "Conectado.");
 
 	freeaddrinfo(server_info);
 

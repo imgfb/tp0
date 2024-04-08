@@ -4,7 +4,7 @@ int main(void)
 {
 	/*---------------------------------------------------PARTE 2-------------------------------------------------------------*/
 
-	int conexion;
+	int conexion = 0;
 	char* ip;
 	char* puerto;
 	char* valor;
@@ -25,16 +25,16 @@ int main(void)
 
 	config = iniciar_config();
 
-	if (config == NULL) {
-    // ¡No se pudo crear el config!
-    // Terminemos el programa
-	exit(EXIT_FAILURE);
-	}
+		if (config == NULL) {
+		// ¡No se pudo crear el config!
+		// Terminemos el programa
+			exit(EXIT_FAILURE);
+		}
 
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 	ip = config_get_string_value(config, "IP");
-	puerto = (config_get_string_value(config, "PUERTO"));
+	puerto = config_get_string_value(config, "PUERTO");
 	valor = config_get_string_value(config, "CLAVE");
 
 	// Loggeamos el valor de config
@@ -45,7 +45,6 @@ int main(void)
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
-	
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
@@ -125,4 +124,5 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
 	  con las funciones de las commons y del TP mencionadas en el enunciado */
 	log_destroy(logger);
+	config_destroy(config);
 }
