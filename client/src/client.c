@@ -59,6 +59,7 @@ int main(void)
 	// Armamos y enviamos el paquete
 	paquete(conexion);
 
+
 	terminar_programa(conexion, logger, config);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
@@ -112,11 +113,26 @@ void paquete(int conexion)
 	char* leido;
 	t_paquete* paquete;
 
+	paquete = crear_paquete();
 	// Leemos y esta vez agregamos las lineas al paquete
+	printf("Inicio de paquete.");
+	leido = readline("> ");
+	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
+	while(1)
+	{
+		if(string_is_empty(leido))
+			break;
 
+		agregar_a_paquete(paquete, leido, strlen(leido)+1);
+		free(leido);
+		leido = readline("> ");
+	}
 
-	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
+	enviar_paquete(paquete, conexion);
 	
+	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
+	free(leido);
+	eliminar_paquete(paquete);
 }
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
